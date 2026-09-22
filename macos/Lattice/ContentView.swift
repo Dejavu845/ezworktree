@@ -71,7 +71,7 @@ struct ContentView: View {
                             Swift.Task { await run { try await client.generateHandoff(rootPath: project.rootPath, taskId: task.id) } }
                         }
                         Button("检查影响范围") {
-                            Swift.Task { await run { try await client.blast(rootPath: project.rootPath, taskId: task.id) } }
+                            Swift.Task { await run { blast = try await client.blast(rootPath: project.rootPath, taskId: task.id) } }
                         }
                     }
                     if let blast {

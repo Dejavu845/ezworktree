@@ -328,13 +328,6 @@ export function useForgeParallax(
     const requestPaint = () => {
       if (!frame) frame = requestAnimationFrame(paint);
     };
-    const onMove = (event: PointerEvent) => {
-      const box = root.getBoundingClientRect();
-      if (!box.width || !box.height) return;
-      targetX = ((event.clientX - box.left) / box.width - 0.5) * 2;
-      targetY = ((event.clientY - box.top) / box.height - 0.5) * 2;
-      requestPaint();
-    };
     const readScroll = () => {
       const max = pane.scrollHeight - pane.clientHeight;
       if (max > 0) {
@@ -342,6 +335,13 @@ export function useForgeParallax(
         return forgeScrollUnit(pane.scrollTop);
       }
       return virtual;
+    };
+    const onMove = (event: PointerEvent) => {
+      const box = root.getBoundingClientRect();
+      if (!box.width || !box.height) return;
+      targetX = ((event.clientX - box.left) / box.width - 0.5) * 2;
+      targetY = ((event.clientY - box.top) / box.height - 0.5) * 2;
+      requestPaint();
     };
     const onScroll = () => {
       targetScroll = readScroll();

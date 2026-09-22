@@ -20,8 +20,7 @@ export function assertTypedConfirm(
   given: string | undefined,
   confirmDestructive: boolean,
   actor: Caller["actor"],
-):
-void {
+): void {
   if (!typedConfirmOk(expected, given, confirmDestructive, actor)) {
     throw new Error(confirmRejectReason(expected));
   }

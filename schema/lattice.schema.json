@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice.local/schema/project.json",
+  "title": "LatticeProject",
+  "type": "object",
+  "required": ["id", "name", "baseBranch", "charter", "tasks", "worktrees", "handoffs", "updatedAt"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "format": "uuid" },
+    "name": { "type": "string", "minLength": 1 },
+    "groupId": { "type": "string" },
+    "baseBranch": { "type": "string", "default": "main" },
+    "charter": { "$ref": "#/$defs/Charter" },
+    "policy": { "$ref": "#/$defs/Policy" },
+    "tasks": { "type": "array", "items": { "$ref": "#/$defs/Task" } },
+    "worktrees": { "type": "array", "items": { "$ref": "#/$defs/Worktree" } },
+    "handoffs": { "type": "array", "items": { "$ref": "#/$defs/Handoff" } },
+    "updatedAt": { "type": "string" }
+  },
+  "$defs": {
+    "Charter": {
+      "type": "object",
+      "required": ["version", "purpose", "architecture", "conventions", "doNotTouch", "layers"],
+      "properties": {
+        "version": { "type": "integer", "minimum": 1 },
+        "purpose": { "type": "string" },
+        "architecture": { "type": "string" },
+        "conventions": { "type": "array", "items": { "type": "string" } },
+        "doNotTouch": { "type": "array", "items": { "type": "string" } },
+        "layers": { "type": "array", "items": { "$ref": "#/$defs/Layer" } }
+      }
+    },
+    "Layer": {
+      "type": "object",
+      "required": ["id", "name", "paths", "frozen"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "paths": { "type": "array", "items": { "type": "string" } },
+        "frozen": { "type": "boolean" }
+      }
+    },
+    "Task": {
+      "type": "object",
+      "required": ["id", "slug", "title", "status", "agent", "allowedPaths", "forbiddenPaths", "layerIds", "allowFrozenTouch", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "slug": { "type": "string", "minLength": 1 },
+        "title": { "type": "string" },
+        "status": { "enum": ["backlog", "active", "review", "done", "blocked"] },
+        "intent": { "enum": ["feat", "spike", "hotfix"] },
+        "baseBranch": { "type": "string" },
+        "agent": { "type": "string" },
+        "allowedPaths": { "type": "array", "items": { "type": "string" } },
+        "forbiddenPaths": { "type": "array", "items": { "type": "string" } },
+        "layerIds": { "type": "array", "items": { "type": "string" } },
+        "allowFrozenTouch": { "type": "boolean" },
+        "escalation": { "$ref": "#/$defs/Escalation" },
+        "worktreeId": { "type": "string" },
+        "handoffId": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "Escalation": {
+      "type": "object",
+      "required": ["reason", "by", "at"],
+      "properties": {
+        "reason": { "type": "string", "minLength": 4 },
+        "by": { "enum": ["human", "agent"] },
+        "agent": { "type": "string" },
+        "at": { "type": "string" },
+        "requestId": { "type": "string" }
+      }
+    },
+    "Worktree": {
+      "type": "object",
+      "required": ["id", "taskId", "path", "branch", "baseBranch", "status", "createdAt"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "taskId": { "type": "string" },
+        "path": { "type": "string" },
+        "branch": { "type": "string" },
+        "baseBranch": { "type": "string" },
+        "status": { "enum": ["active", "review", "archived"] },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "Handoff": {
+      "type": "object",
+      "required": ["id", "taskId", "fromAgent", "toAgent", "path", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "taskId": { "type": "string" },
+        "fromAgent": { "type": "string" },
+        "toAgent": { "type": "string" },
+        "path": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "Policy": {
+      "type": "object",
+      "required": ["version", "preset", "agentMay", "wiki", "declared", "updatedAt", "updatedBy"],
+      "properties": {
+        "version": { "const": 1 },
+        "preset": { "enum": ["locked", "balanced", "open", "custom"] },
+        "agentMay": {
+          "type": "object",
+          "additionalProperties": { "enum": ["never", "ask", "allow"] }
+        },
+        "wiki": {
+          "type": "object",
+          "properties": {
+            "ingestHandoffs": { "enum": ["always", "onDone"] },
+            "agentWrites": {
+              "type": "object",
+              "properties": {
+                "concepts": { "type": "boolean" },
+                "sources": { "type": "boolean" },
+                "syntheses": { "type": "boolean" }
+              }
+            },
+            "gate": { "enum": ["off", "warn", "block"] }
+          }
+        },
+        "declared": {
+          "type": "object",
+          "properties": {
+            "push": { "enum": ["never", "ask", "allow"] },
+            "publishArtifacts": { "enum": ["never", "ask", "allow"] }
+          }
+        },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "const": "human" }
+      }
+    }
+  }
+}

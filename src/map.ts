@@ -205,7 +205,8 @@ export function laneCheckoutPath(
 
 /** Deck bays are planted checkouts, not the primary repo root and not a leftover archived path. */
 export function isDeckBay(lane: { worktreePath?: string }, rootPath: string): boolean {
-  return Boolean(lane.worktreePath && lane.worktreePath !== rootPath);
+  const path = lane.worktreePath || "";
+  return Boolean(path && path !== rootPath);
 }
 
 export function bayPath(path: string | undefined, rootPath: string): string {

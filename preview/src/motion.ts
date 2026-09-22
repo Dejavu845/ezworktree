@@ -286,7 +286,7 @@ export function useLocalPointer(host: RefObject<HTMLElement | null>, enabled: bo
   }, [enabled]);
 }
 
-/** Forge skin only: pointer + scroll \u2192 CSS vars. Lean never calls this with enabled. */
+/** Forge skin only: pointer + scroll → CSS vars. Lean never calls this with enabled. */
 export function useForgeParallax(
   host: RefObject<HTMLElement | null>,
   scroller: RefObject<HTMLElement | null>,

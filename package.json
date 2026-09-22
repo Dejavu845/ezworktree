@@ -1,0 +1,19 @@
+{
+  "name": "lattice",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent Workzoon — visual worktree manager and Karpathy LLM wiki for multi-agent work",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dejavu845/ezworktree.git"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --test test/*.test.ts",
+    "serve": "node --experimental-strip-types src/server.ts",
+    "cli": "node --experimental-strip-types src/cli.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -252,7 +252,8 @@ function layerLabel(layer: WikiPage["layer"]) {
 }
 
 function shortPath(path: string) {
-  return path.split("/").filter(Boolean).slice(-2).join("/") || path;
+  const parts = path.split("/").filter(Boolean);
+  return parts.slice(-2).join("/") || path;
 }
 
 function WikiBody({

@@ -335,6 +335,14 @@ export function useForgeParallax(
       targetY = ((event.clientY - box.top) / box.height - 0.5) * 2;
       requestPaint();
     };
+    const readScroll = () => {
+      const max = pane.scrollHeight - pane.clientHeight;
+      if (max > 0) {
+        virtual = 0;
+        return forgeScrollUnit(pane.scrollTop);
+      }
+      return virtual;
+    };
     const onScroll = () => {
       targetScroll = readScroll();
       requestPaint();

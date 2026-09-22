@@ -12,7 +12,7 @@ export function typedConfirmOk(
 }
 
 export function confirmRejectReason(expected: string): string {
-  return `\u5148\u6253\u51fa\u300c${expected}\u300d\u518d\u786e\u8ba4\u3002`;
+  return `先打出「${expected}」再确认。`;
 }
 
 export function assertTypedConfirm(
@@ -20,7 +20,8 @@ export function assertTypedConfirm(
   given: string | undefined,
   confirmDestructive: boolean,
   actor: Caller["actor"],
-): void {
+):
+void {
   if (!typedConfirmOk(expected, given, confirmDestructive, actor)) {
     throw new Error(confirmRejectReason(expected));
   }

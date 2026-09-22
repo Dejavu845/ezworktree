@@ -38,7 +38,7 @@ Agent Workzoon 是同时给 **人和 Agent** 用的控制面，不是启动器�
 13. **授权随仓**：仓级 Policy 写在 `.lattice/project.json`，不进 catalog。破坏性动作对 Agent 最高 `ask`。引擎默认 `actor=agent`（fail closed）；人的 UI 必须带 `X-Workzoon-Actor: human`。
 14. **百科是义务**：维护 wiki 不是 boolean duty。交接必入 `raw/handoffs/`；`markDone` 受 `policy.wiki.gate` 约束（`block` 时本任务 raw-uncompiled 过不去）。`agentWrites` 关掉的 `concepts` / `sources` / `syntheses`：Agent 经 `wiki-write` 写不进去；磁盘上多出来的页 lint 为 `write-forbidden`。见 `WIKI-WRITES-SPEC.md`。
 15. **工序图纯读**：`GET /api/graph` 只推导五种节点（`repo|branch|worktree|artifact|task`）和五条边（`ref|checkout|open|build|pin`）。不写 `.lattice/graph.json`。remote / commit / Agent 不是节点。未种树的任务没有 `open` 边。
-16. **任务文件跟分支**：已开树的任务，`.lattice/tasks/<id>.md` 与 `.lattice/handoffs/<id>.md` 用 `git add -f` 钉在任务分支上。主 checkout 的 `AGENTS.md` 永远不写「当前任务」。未开树的卡只留主仓磁盘（exclude），不进任何分支。
+16. **任务文件跟分支**：已开树的任务，`.lattice/tasks/<id>.md` 与 `.lattice/handoffs/<id>.md` 用 `git add -f` 钉在任务分支上。主 checkout 的 `AGENTS.md` 永不写「当前任务」。未开树的卡只留主仓磁盘（exclude），不进任何分支。
 17. **仓内无机器路径**：`.lattice/project.json` 不持久化绝对 `rootPath`。内存里的 `Project.rootPath` 由 `loadProject(abs)` 注入。本机路径只进 catalog。
 18. **宪章有版本**：`charter.version` 是正整数，引擎持有。正文一变就 `+1`。`BlastReport.charterVersion` 与交接 `## Lattice` 的 `Charter: vn` 记下当场版本。不改冻层判定。
 19. **破坏性要点名**：人归档 worktree 或删除分支时，若 `confirmDestructive`（默认开），必须输入该分支名。引擎执法。Agent 仍走 Policy。已批准请求回放时带上已知分支名。见 `CONFIRM-SPEC.md`。

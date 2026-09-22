@@ -48,19 +48,19 @@ function fixture(name = "Handoff"): string {
 
 describe("handoff frontmatter and HEAD", () => {
   it("speaks Chinese when markDone is refused", () => {
-    assert.match(doneRejectReason("handoff"), /\u5199\u5b8c\u4ea4\u63a5/);
-    assert.match(doneRejectReason("handoff-empty"), /\u4ea4\u63a5\u8fd8\u662f\u7a7a\u7684/);
-    assert.match(doneRejectReason("head"), /\u91cd\u65b0\u751f\u6210\u4ea4\u63a5/);
-    assert.match(doneRejectReason("blast"), /\u80fd\u78b0\u7684\u8303\u56f4/);
-    assert.match(doneRejectReason("wiki-raw", { title: "\u4fee\u63d0\u793a\u6587\u6848", count: 2 }), /\u767e\u79d1\u8fd8\u62e6\u7740.*\u4fee\u63d0\u793a\u6587\u6848.*2 \u6761\u6ca1\u5199/);
-    assert.match(doneRejectReason("wiki-forbidden", { count: 1 }), /1 \u7c7b\u73b0\u5728\u4e0d\u8ba9\u5199/);
+    assert.match(doneRejectReason("handoff"), /写完交接/);
+    assert.match(doneRejectReason("handoff-empty"), /交接还是空的/);
+    assert.match(doneRejectReason("head"), /重新生成交接/);
+    assert.match(doneRejectReason("blast"), /能碰的范围/);
+    assert.match(doneRejectReason("wiki-raw", { title: "修提示文案", count: 2 }), /百科还拦着.*修提示文案.*2 条没写/);
+    assert.match(doneRejectReason("wiki-forbidden", { count: 1 }), /1 类现在不让写/);
     assert.equal(doneRejectReason("handoff").includes("Cannot"), false);
   });
 
   it("rejects a marker-only file and stamps none when no tree exists", () => {
     const repo = fixture("CardOnly");
     const { task } = createTask(repo, { title: "card handoff", allowedPaths: ["app/**"] }, HUMAN);
-    assert.equal(isValidHandoff(`# HANDOFF\n<!-- agent-handoff v1 \u00b7 task: ${task.id} -->\n\n## Decisions\n`), false);
+    assert.equal(isValidHandoff(`# HANDOFF\n<!-- agent-handoff v1 · task: ${task.id} -->\n\n## Decisions\n`), false);
     const { markdown } = generateHandoff(repo, task.id, {
       decisions: "Keep the card.",
       nextAction: "Plant later.",
@@ -83,7 +83,7 @@ describe("handoff frontmatter and HEAD", () => {
     const repo = fixture("InvalidWrite");
     const { task } = createTask(repo, { title: "broken write", allowedPaths: ["app/**"] }, HUMAN);
     const project = loadProject(repo)!;
-    assert.match(handoffRejectReason(), /\u8fd8\u4e0d\u5b8c\u6574/);
+    assert.match(handoffRejectReason(), /还不完整/);
     assert.equal(handoffRejectReason().includes("frontmatter"), false);
     assert.throws(() => writeHandoff(project, "# HANDOFF\n", task, "agent", "next"), (err: unknown) => {
       assert.equal((err as Error).message, handoffRejectReason());
@@ -122,9 +122,9 @@ describe("handoff frontmatter and HEAD", () => {
     const repo = fixture("EmptyFill");
     const { task } = createTask(repo, { title: "empty fill", allowedPaths: ["app/**"] }, HUMAN);
     generateHandoff(repo, task.id);
-    assert.throws(() => markDone(repo, task.id, HUMAN), /\u4ea4\u63a5\u8fd8\u662f\u7a7a\u7684/);
+    assert.throws(() => markDone(repo, task.id, HUMAN), /交接还是空的/);
     const prompt = handoffView(repo, task.id).prompt;
-    assert.match(prompt, /\u63a5\u4e0b\u300cEmptyFill\u300d\u91cc\u7684\u4efb\u52a1\u300cempty fill\u300d/);
+    assert.match(prompt, /接下「EmptyFill」里的任务「empty fill」/);
     assert.equal(prompt.includes("You are taking over"), false);
   });
 });

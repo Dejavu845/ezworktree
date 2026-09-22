@@ -48,9 +48,9 @@ describe("charter version", () => {
     assert.match(readFileSync(join(repo, ".lattice", "charter.md"), "utf8"), /^Version: 1$/m);
     const disk = JSON.parse(readFileSync(projectFile(repo), "utf8"));
     assert.equal(disk.charter.version, 1);
-    assert.match(project?.charter.purpose || "", /\u6309\u4e00\u4efd\u56fa\u5b9a\u5baa\u7ae0/);
+    assert.match(project?.charter.purpose || "", /按一份固定宪章/);
     assert.equal((project?.charter.purpose || "").includes("fixed framework"), false);
-    assert.match(project?.charter.conventions.join("\n") || "", /\u5148\u5199\u4ea4\u63a5/);
+    assert.match(project?.charter.conventions.join("\n") || "", /先写交接/);
   });
 
   it("fills missing version on load and ignores a caller-supplied number", () => {
@@ -91,7 +91,7 @@ describe("charter version", () => {
     const disk = () => readFileSync(join(repo, ".lattice", "charter.md"), "utf8");
     const before = disk();
     const jsonBefore = readFileSync(projectFile(repo), "utf8");
-    assert.equal(charterRejectReason("scope"), "Agent \u53ea\u80fd\u6539\u5e72\u6d3b\u7684\u89c4\u77e9\uff0c\u6216\u52a0\u4e00\u5c42\u3002\u8fd9\u9879\u76ee\u8981\u505a\u4ec0\u4e48\u3001\u600e\u4e48\u642d\uff0c\u8bf7\u4f60\u6765\u5199\u3002");
+    assert.equal(charterRejectReason("scope"), "Agent 只能改干活的规矩，或加一层。这项目要做什么、怎么搭，请你来写。");
     assert.throws(() => updateCharter(repo, { ...project.charter, purpose: "rewrite the product" }, AGENT), (err: unknown) => {
       assert.equal((err as Error).message, charterRejectReason("scope"));
       assert.equal((err as Error).message.includes("conventions"), false);
